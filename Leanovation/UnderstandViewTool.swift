@@ -8,12 +8,14 @@
 
 import UIKit
 
-class UnderstandViewTool: UIView {
+class UnderstandViewTool: UIView, UIWebViewDelegate {
     
     var selectedModel:Int = 0
     var lineBorderPosition:CGFloat = 0.00
     var appUrl:String = ""
     var mainModelName = ""
+    
+    var loadingIndicator = UIActivityIndicatorView(frame: CGRectMake(190, 140, 20, 20))
     
     let common = Common()
     
@@ -69,9 +71,14 @@ class UnderstandViewTool: UIView {
         
         // Web View
         
+        loadingIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
+        loadingIndicator.hidesWhenStopped = true
+        
         var webView = UIWebView(frame: CGRectMake(105, 190, 380, 280))
+        webView.delegate = self
         webView.sizeToFit()
         webView.loadHTMLString(businessModel.embedHtmlString, baseURL: NSBundle.mainBundle().resourceURL)
+        webView.addSubview(loadingIndicator)
         
         self.addSubview(webView)
         
@@ -147,6 +154,18 @@ class UnderstandViewTool: UIView {
     
     func setModel(num:Int) {
         self.selectedModel = num
+    }
+    
+    func webViewDidStartLoad(webView: UIWebView) {
+        
+        
+        loadingIndicator.startAnimating()
+        
+    }
+    
+    func webViewDidFinishLoad(webView: UIWebView) {
+        
+        loadingIndicator.stopAnimating()
     }
 
     
